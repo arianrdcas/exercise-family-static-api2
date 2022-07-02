@@ -30,13 +30,47 @@ def handle_hello():
 
     # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
-    response_body = {
-        "hello": "world",
-        "family": members
+    return jsonify(members), 200
+
+@app.route('/one_member/<int:id>', methods=['GET'])
+def one_member(id):
+    member = jackson_family.get_member(id)
+    return jsonify(member),200
+
+@app.route('/member', methods=['POST'])
+def add_member():
+
+    jackson_family.first_name = request.json.get('first_name')
+    jackson_family.age = request.json.get('age')
+    jackson_family.lucky_numbers = request.json.get('lucky_numbers')
+    jackson_family.id = request.json.get('id')
+
+    if not jackson_family.first_name or jackson_family.first_name == "":
+        return jsonify({"msg: Por favor, escriba un nombre"}), 404 
+
+    if not jackson_family.age or jackson_family.age == "":
+        return jsonify({"msg: Por favor, escriba su edad"}), 404 
+
+    if not jackson_family.lucky_numbers or jackson_family.lucky_numbers == "":
+        return jsonify({"msg: Por favor, escriba al menos un numero de la suerte"}), 404 
+
+    member = {
+        "first_name": jackson_family.first_name,
+        "age": jackson_family.age,
+        "lucky_numbers": jackson_family.lucky_numbers,
+        "id": jackson_family.id
     }
+    jackson_family.add_member(member)
+    return jsonify(), 200
 
 
-    return jsonify(response_body), 200
+@app.route('/delete/<int:id>', methods=['DELETE'])
+def delete_member(id):
+    
+    member = jackson_family.delete_member(id)
+    return jsonify({"done":True}),200
+
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
