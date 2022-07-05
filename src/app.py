@@ -32,7 +32,7 @@ def handle_hello():
     members = jackson_family.get_all_members()
     return jsonify(members), 200
 
-@app.route('/one_member/<int:id>', methods=['GET'])
+@app.route('/member/<int:id>', methods=['GET'])
 def one_member(id):
     member = jackson_family.get_member(id)
     return jsonify(member),200
